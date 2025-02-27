@@ -1,0 +1,3 @@
+# **Projeto Imobiliária - API RESTful**
+## Descrição
+Este projeto tem como objetivo desenvolver uma API RESTful para uma empresa imobiliária. A API será capaz de realizar operações como listar, adicionar, atualizar e remover imóveis, bem como realizar filtros por tipo e cidade. O servidor será desenvolvido utilizando o framework Flask e os dados serão armazenados em um banco de dados MySQL hospedado na plataforma Aiven. O desenvolvimento será baseado nos princípios de TDD (Test Driven Development), garantindo que a aplicação tenha testes automatizados para todas as rotas.
