@@ -5,3 +5,5 @@ requests==2.31.0
 mysql-connector-python==8.0.32
 api
 mock
+python-dotenv
+mysqlclient
