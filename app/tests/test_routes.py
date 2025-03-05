@@ -316,3 +316,62 @@ def test_route_view_imoveis_by_tipo(mock_connect_db, client):
 
     # Certificamos que o método `execute` foi chamado corretamente
     mock_cursor.execute.assert_called_once_with("SELECT * FROM imoveis WHERE tipo = %s", (tipo_imovel,))
+
+@patch("app.db.database.connect_db")  # Mockando a conexão com o banco
+def test_route_view_imoveis_by_cidade(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Simulamos o retorno do banco de dados para a cidade "São Paulo"
+    mock_cursor.fetchall.return_value = [
+        (1, "Rua A", "Avenida", "Centro", "São Paulo", "01000-000", "casa", 500000.00, "2024-03-01"),
+        (2, "Rua B", "Travessa", "Bairro X", "São Paulo", "22000-000", "apartamento", 750000.00, "2023-05-10"),
+    ]
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Cidade a ser pesquisada
+    cidade = "São Paulo"
+
+    # Fazemos a requisição `GET` para a API
+    response = client.get(f"/view_imoveis_by_cidade/{cidade}")
+
+    # Verificamos se o código de status da resposta é 200 (OK)
+    assert response.status_code == 200
+
+    # Verificamos se os dados retornados estão corretos
+    expected_response = {
+        "imoveis": [
+            {
+                "id": 1,
+                "logradouro": "Rua A",
+                "tipo_logradouro": "Avenida",
+                "bairro": "Centro",
+                "cidade": "São Paulo",
+                "cep": "01000-000",
+                "tipo": "casa",
+                "valor": 500000.00,
+                "data_aquisicao": "2024-03-01"
+            },
+            {
+                "id": 2,
+                "logradouro": "Rua B",
+                "tipo_logradouro": "Travessa",
+                "bairro": "Bairro X",
+                "cidade": "São Paulo",
+                "cep": "22000-000",
+                "tipo": "apartamento",
+                "valor": 750000.00,
+                "data_aquisicao": "2023-05-10"
+            }
+        ]
+    }
+    assert response.get_json() == expected_response
+
+    # Certificamos que o método `execute` foi chamado corretamente
+    mock_cursor.execute.assert_called_once_with("SELECT * FROM imoveis WHERE cidade = %s", (cidade,))
