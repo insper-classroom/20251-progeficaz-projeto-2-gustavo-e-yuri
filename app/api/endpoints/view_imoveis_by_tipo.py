@@ -6,8 +6,8 @@ from app.db.database import connect_db
 
 imoveis_bp = Blueprint("imoveis", __name__)
 
-@imoveis_bp.route("/view_imoveis_by_type/<string:tipo>", methods=["GET"])
-def view_imoveis_by_type(tipo):
+@imoveis_bp.route("/view_imoveis_by_tipo/<string:tipo>", methods=["GET"])
+def view_imoveis_by_tipo(tipo):
     """
     Retorna a lista de imóveis filtrados por tipo (ex: casa, apartamento, terreno).
     """

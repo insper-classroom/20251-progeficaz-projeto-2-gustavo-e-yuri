@@ -7,7 +7,8 @@ from app.api.endpoints.view_imoveis_from_id import view_imovel_by_id_bp
 from app.api.endpoints.add_imovel import add_imovel_bp
 from app.api.endpoints.update_imovel import update_imovel_bp
 from app.api.endpoints.remove_imovel import remove_imovel
-from app.api.endpoints.view_imoveis_by_type import view_imoveis_by_type
+from app.api.endpoints.view_imoveis_by_tipo import view_imoveis_by_tipo
+from app.api.endpoints.view_imoveis_by_cidade import view_imoveis_by_cidade
 
 api_bp = Blueprint('api', __name__)
 
@@ -17,4 +18,5 @@ api_bp.register_blueprint(view_imovel_by_id_bp, url_prefix='/imoveis')
 api_bp.register_blueprint(add_imovel_bp, url_prefix='/imoveis')
 api_bp.register_blueprint(update_imovel_bp, url_prefix='/imoveis')
 api_bp.register_blueprint(remove_imovel, url_prefix='/imoveis')
-api_bp.register_blueprint(view_imoveis_by_type, url_prefix='/imoveis')
+api_bp.register_blueprint(view_imoveis_by_tipo, url_prefix='/imoveis')
+api_bp.register_blueprint(view_imoveis_by_cidade, url_prefix='/imoveis')
