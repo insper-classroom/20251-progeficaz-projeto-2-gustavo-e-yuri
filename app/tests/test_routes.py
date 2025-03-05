@@ -220,3 +220,40 @@ def test_route_update_imovel(mock_connect_db, client):
 
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
+
+@patch("app.db.database.connect_db")  # Mockando a conexão com o banco
+def test_route_remove_imovel(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Simulamos um imóvel existente no banco
+    mock_cursor.fetchone.return_value = (1, "Rua Exemplo", "Avenida", "Centro", "São Paulo", "01000-000", "apartamento", 500000.00, "2024-03-01")
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # ID do imóvel a ser removido
+    imovel_id = 1
+
+    # Fazemos a requisição `DELETE` para a API
+    response = client.delete(f"/remove_imovel/{imovel_id}")
+
+    # Verificamos se o código de status da resposta é 200 (OK)
+    assert response.status_code == 200
+
+    # Verificamos se os dados retornados estão corretos
+    expected_response = {
+        "mensagem": "Imóvel removido com sucesso"
+    }
+    assert response.get_json() == expected_response
+
+    # Certificamos que o método `execute` foi chamado corretamente
+    mock_cursor.execute.assert_any_call("SELECT * FROM imoveis WHERE id = %s", (imovel_id,))
+    mock_cursor.execute.assert_any_call("DELETE FROM imoveis WHERE id = %s", (imovel_id,))
+
+    # Certificamos que o método `commit` foi chamado
+    mock_conn.commit.assert_called_once()
