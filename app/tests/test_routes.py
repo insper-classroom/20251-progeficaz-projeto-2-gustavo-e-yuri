@@ -178,3 +178,45 @@ def test_route_add_imovel(mock_connect_db, client):
 
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
+
+@patch("app.db.database.connect_db")  # O caminho correto para a função a ser mockada
+def test_route_update_imovel(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Dados para atualizar um imóvel existente
+    update_data = {
+        "valor": 600000,
+        "bairro": "Novo Bairro Atualizado"
+    }
+
+    # ID do imóvel a ser atualizado
+    imovel_id = 1
+
+    # Fazemos a requisição `PUT` para a API
+    response = client.put(f"/update_imovel/{imovel_id}", json=update_data)
+
+    # Verificamos se o código de status da resposta é 200 (OK)
+    assert response.status_code == 200
+
+    # Verificamos se os dados retornados estão corretos
+    expected_response = {
+        "mensagem": "Imóvel atualizado com sucesso"
+    }
+    assert response.get_json() == expected_response
+
+    # Certificamos que o método `execute` foi chamado com o SQL correto
+    mock_cursor.execute.assert_called_once_with(
+        "UPDATE imoveis SET valor = %s, bairro = %s WHERE ID = %s",
+        (600000, "Novo Bairro Atualizado", imovel_id),
+    )
+
+    # Certificamos que o método `commit` foi chamado
+    mock_conn.commit.assert_called_once()
