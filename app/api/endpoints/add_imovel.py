@@ -1,4 +1,4 @@
-#  DESC: Endpoint para adicionar um imóvel ao banco de dados
+#  Description: Endpoint para adicionar um imóvel ao banco de dados
 #  app/api/endpoints/add_imovel.py
 
 from flask import Blueprint, request, jsonify
