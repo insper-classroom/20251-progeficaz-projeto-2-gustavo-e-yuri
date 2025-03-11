@@ -2,7 +2,7 @@
 #  app/api/endpoints/add_imovel.py
 
 from flask import Blueprint, request, jsonify
-from app.db.database import connect_db  # Importando a função de conexão
+from server.db.database import connect_db  # Importando a função de conexão
 
 add_imovel_bp = Blueprint('add_imovel', __name__)
 
@@ -29,4 +29,4 @@ def add_imovel():
     cursor.execute(query, valores)
     conn.commit()
     
-    return jsonify({"mensagem": "Imóvel adicionado com sucesso!"}), 201
+    return jsonify({"mensagem": "Imóvel adicionado com sucesso."}), 201

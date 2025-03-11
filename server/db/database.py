@@ -3,7 +3,7 @@
 
 import mysql.connector
 from mysql.connector import Error
-from app.api.core.config import Config  # Importa a configuração corretamente
+from server.api.core.config import Config  # Importa a configuração corretamente
 
 # Conexão com o banco de dados
 def connect_db():

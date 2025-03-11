@@ -2,7 +2,7 @@
 # app/api/endpoints/view_imoveis_from_id.py
 
 from flask import Blueprint, jsonify
-from app.db.database import connect_db  # Importando a função de conexão
+from server.db.database import connect_db  # Importando a função de conexão
 
 view_imovel_by_id_bp = Blueprint('view_imovel_by_id', __name__)  # Novo nome para o Blueprint
 

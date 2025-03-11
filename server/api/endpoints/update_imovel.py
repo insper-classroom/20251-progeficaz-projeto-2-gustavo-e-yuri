@@ -2,7 +2,7 @@
 # app/api/endpoints/update_imovel.py
 
 from flask import Blueprint, request, jsonify
-from app.db.database import connect_db  # Importando a função de conexão
+from server.db.database import connect_db  # Importando a função de conexão
 
 update_imovel_bp = Blueprint('update_imovel', __name__)  # Definindo o Blueprint
 

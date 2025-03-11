@@ -2,11 +2,11 @@
 # app/api/endpoints/view_imoveis_by_city.py
 
 from flask import Blueprint, jsonify
-from app.db.database import connect_db
+from server.db.database import connect_db
 
-imoveis_bp = Blueprint("imoveis", __name__)
+view_imoveis_by_cidade_bp = Blueprint("view_imoveis_by_cidade", __name__)
 
-@imoveis_bp.route("/view_imoveis_by_cidade/<string:cidade>", methods=["GET"])
+@view_imoveis_by_cidade_bp.route("/view_imoveis_by_cidade/<string:cidade>", methods=["GET"])
 def view_imoveis_by_cidade(cidade):
     """
     Retorna a lista de imóveis filtrados por cidade.
