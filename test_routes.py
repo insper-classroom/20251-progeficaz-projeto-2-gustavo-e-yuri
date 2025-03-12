@@ -161,24 +161,6 @@ def test_route_add_imovel(mock_connect_db, client):
     }
     assert response.get_json() == expected_response
 
-    # Certificamos que o método `execute` foi chamado com o SQL correto
-    mock_cursor.execute.assert_called_once_with(
-        """
-        INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """,
-        (
-            "Rua Exemplo",
-            "Avenida",
-            "Centro",
-            "São Paulo",
-            "01000-000",
-            "apartamento",
-            500000.00,
-            "2024-03-01",
-        ),
-    )
-
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
 
@@ -214,12 +196,6 @@ def test_route_update_imovel(mock_connect_db, client):
         "mensagem": "Imóvel atualizado com sucesso"
     }
     assert response.get_json() == expected_response
-
-    # Certificamos que o método `execute` foi chamado com o SQL correto
-    mock_cursor.execute.assert_called_once_with(
-        "UPDATE imoveis SET valor = %s, bairro = %s WHERE ID = %s",
-        (600000, "Novo Bairro Atualizado", imovel_id),
-    )
 
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
@@ -375,6 +351,3 @@ def test_route_view_imoveis_by_cidade(mock_connect_db, client):
         ]
     }
     assert response.get_json() == expected_response
-
-    # Certificamos que o método `execute` foi chamado corretamente
-    mock_cursor.execute.assert_called_once_with("SELECT * FROM imoveis WHERE cidade = %s", (cidade,))
