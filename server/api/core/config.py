@@ -19,7 +19,7 @@ class Config:
     DB_USER = os.getenv('DB_USER')  # Exige que o DB_USER seja definido
     DB_PASSWORD = os.getenv('DB_PASSWORD')  # Exige que o DB_PASSWORD seja definido
     DB_NAME = os.getenv('DB_NAME')  # Exige que o DB_NAME seja definido
-    DB_PORT = int(os.getenv('DB_PORT', 3306))  # Usa o valor padrão de 3306 se DB_PORT não for encontrado
+    DB_PORT = int(os.getenv('DB_PORT', 19216))  # Usa o valor padrão de 3306 se DB_PORT não for encontrado
 
     # Validação das variáveis obrigatórias
     if not DB_USER or not DB_PASSWORD or not DB_NAME:
