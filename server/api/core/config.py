@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 # Carrega variáveis de ambiente do arquivo .env
-load_dotenv('.cred')
+load_dotenv('.env.local')
 
 class Config:
     """Configurações globais da aplicação."""
@@ -20,6 +20,7 @@ class Config:
     DB_PASSWORD = os.getenv('DB_PASSWORD')  # Exige que o DB_PASSWORD seja definido
     DB_NAME = os.getenv('DB_NAME')  # Exige que o DB_NAME seja definido
     DB_PORT = int(os.getenv('DB_PORT', 19216))  # Usa o valor padrão de 3306 se DB_PORT não for encontrado
+    SSL_CA = "server/db/ca.pem"
 
     # Validação das variáveis obrigatórias
     if not DB_USER or not DB_PASSWORD or not DB_NAME:

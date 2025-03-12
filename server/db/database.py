@@ -15,9 +15,12 @@ def connect_db():
             user=Config.DB_USER,
             password=Config.DB_PASSWORD,
             database=Config.DB_NAME,
-            port=Config.DB_PORT
+            port=Config.DB_PORT,
+            ssl_ca=Config.SSL_CA,  # Caminho para o certificado da Aiven
         )
         if conn.is_connected():
+            cursor = conn.cursor()
+            cursor.execute(f"USE {Config.DB_NAME};")
             return conn
     except Error as err:
         # Em caso de erro, imprime a mensagem de erro

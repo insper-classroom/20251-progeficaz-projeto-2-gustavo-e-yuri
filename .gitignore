@@ -169,5 +169,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-.cred
-.cred
+.credi
+server/db/ca.pem
+.env.local
