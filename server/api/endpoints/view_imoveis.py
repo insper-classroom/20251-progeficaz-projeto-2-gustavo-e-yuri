@@ -34,6 +34,7 @@ def view_imoveis():
             'data_aquisicao': imovel[8],
         })
 
+    #Gerando o HATEOAS
     links = {
         'self': url_for('app.view_imoveis.view_imoveis', _external=True),
         'add': url_for('app.add_imovel.add_imovel', _external=True),

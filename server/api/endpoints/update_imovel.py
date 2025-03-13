@@ -41,6 +41,7 @@ def update_imovel(id):
         if not imovel:
             return jsonify({'erro': 'Erro ao recuperar imóvel atualizado'}), 500
 
+        #Gerando o HATEOAS
         links = {
             "self": url_for("app.update_imovel.update_imovel", id=id, _external=True),
             "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),

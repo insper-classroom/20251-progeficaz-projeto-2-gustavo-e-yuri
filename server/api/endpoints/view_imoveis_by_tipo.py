@@ -38,6 +38,7 @@ def view_imoveis_by_tipo(tipo):
             for row in imoveis
         ]
 
+        #Gerando o HATEOAS
         links = {
             "self": url_for("app.view_imoveis_by_tipo.view_imoveis_by_tipo", tipo=tipo, _external=True),
             "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),

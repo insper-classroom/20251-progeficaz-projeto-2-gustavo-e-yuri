@@ -32,6 +32,8 @@ def add_imovel():
 
     conn.close()
 
+
+    #Gerando o HATEOAS
     links = {'self': url_for('app.view_imovel_by_id.view_imoveis_from_id', id= imovel_id, _external=True),
         'list_all': url_for('app.view_imoveis.view_imoveis',  _external=True),
         'update': url_for('app.update_imovel.update_imovel', id= imovel_id, _external=True),

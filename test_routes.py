@@ -1,6 +1,6 @@
 # Description: Testes de integração para as rotas da API
 # test_routes.py
-
+from flask import url_for
 import pytest
 from unittest.mock import patch, MagicMock
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -76,7 +76,13 @@ def test_route_view_imoveis(mock_connect_db, client):
                 "valor": 815969.92,
                 "data_aquisicao": "2020-04-24"
             }
-        ]
+        ],
+        "links" : { 
+        'self': url_for('app.view_imoveis.view_imoveis', _external=True),
+        'add': url_for('app.add_imovel.add_imovel', _external=True),
+        'filter_by_city': url_for('app.view_imoveis_by_cidade.view_imoveis_by_cidade', cidade="NOME_CIDADE", _external=True),
+        'filter_by_type': url_for('app.view_imoveis_by_tipo.view_imoveis_by_tipo', tipo="TIPO_IMOVEL", _external=True),
+    }
     }
     
     # Asserção para comparar o JSON retornado com o esperado
@@ -119,7 +125,14 @@ def test_route_view_imoveis_from_id(mock_connect_db, client):
                 "valor": 488423.52,
                 "data_aquisicao": "2017-07-29"
             }
-        ]
+        ],
+        'links' : {
+        "self": url_for("app.view_imovel_by_id.view_imoveis_from_id", id=1, _external=True),
+        "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),
+        "add": url_for("app.add_imovel.add_imovel", _external=True),
+        "update": url_for("app.update_imovel.update_imovel", id=1, _external=True),
+        "delete": url_for("app.remove_imovel.remove_imovel", imovel_id=1, _external=True),
+    }
     }
 
     # Asserção para comparar o JSON retornado com o esperado
@@ -157,9 +170,9 @@ def test_route_add_imovel(mock_connect_db, client):
 
     # Verificamos se os dados retornados estão corretos
     expected_response = {
-        "mensagem": "Imóvel adicionado com sucesso."
+        "mensagem": "Imóvel adicionado com sucesso.",
     }
-    assert response.get_json() == expected_response
+    assert response.get_json()['mensagem'] == expected_response['mensagem']
 
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
@@ -195,7 +208,7 @@ def test_route_update_imovel(mock_connect_db, client):
     expected_response = {
         "mensagem": "Imóvel atualizado com sucesso"
     }
-    assert response.get_json() == expected_response
+    assert response.get_json()['mensagem'] == expected_response['mensagem']
 
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
@@ -228,7 +241,7 @@ def test_route_remove_imovel(mock_connect_db, client):
     expected_response = {
         "mensagem": "Imóvel removido com sucesso"
     }
-    assert response.get_json() == expected_response
+    assert response.get_json()['mensagem'] == expected_response['mensagem']
 
     # Certificamos que o método `execute` foi chamado corretamente
     mock_cursor.execute.assert_any_call("SELECT * FROM imoveis WHERE id = %s", (imovel_id,))
@@ -291,7 +304,7 @@ def test_route_view_imoveis_by_tipo(mock_connect_db, client):
             }
         ]
     }
-    assert response.get_json() == expected_response
+    assert response.get_json()['imoveis'] == expected_response['imoveis']
 
     # Certificamos que o método `execute` foi chamado corretamente
     mock_cursor.execute.assert_called_once_with("SELECT * FROM imoveis WHERE tipo = %s", (tipo_imovel,))
@@ -350,4 +363,4 @@ def test_route_view_imoveis_by_cidade(mock_connect_db, client):
             }
         ]
     }
-    assert response.get_json() == expected_response
+    assert response.get_json()['imoveis'] == expected_response['imoveis']

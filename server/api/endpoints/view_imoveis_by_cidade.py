@@ -38,6 +38,7 @@ def view_imoveis_by_cidade(cidade):
             for row in imoveis
         ]
 
+        #Gerando o HATEOAS
         links = {
             "self": url_for("app.view_imoveis_by_cidade.view_imoveis_by_cidade", cidade=cidade, _external=True),
             "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),

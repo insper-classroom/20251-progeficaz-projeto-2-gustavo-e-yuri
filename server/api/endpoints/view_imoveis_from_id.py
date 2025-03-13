@@ -34,6 +34,7 @@ def view_imoveis_from_id(id):
             'data_aquisicao': imovel[8],
         })
 
+    #Gerando o HATEOAS
     links = {
         "self": url_for("app.view_imovel_by_id.view_imoveis_from_id", id=id, _external=True),
         "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),
@@ -42,4 +43,4 @@ def view_imoveis_from_id(id):
         "delete": url_for("app.remove_imovel.remove_imovel", imovel_id=id, _external=True),
     }
 
-    return jsonify({"imoveis": imoveis, "_links": links}), 200
+    return jsonify({"imoveis": imoveis, "links": links}), 200
