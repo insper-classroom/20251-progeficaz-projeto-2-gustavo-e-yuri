@@ -1,5 +1,5 @@
 # Description: Testes de integração para as rotas da API
-# server/tests/test_routes.py
+# test_routes.py
 
 import pytest
 from unittest.mock import patch, MagicMock

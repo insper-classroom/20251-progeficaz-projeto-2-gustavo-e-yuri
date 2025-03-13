@@ -1,7 +1,7 @@
 # Description: Remove um imóvel do banco de dados pelo ID.
-# app/api/endpoints/remove_imovel.py
+# server/api/endpoints/remove_imovel.py
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, url_for
 from server.db.database import connect_db
 
 remove_imovel_bp = Blueprint("remove_imovel", __name__)
@@ -26,7 +26,14 @@ def remove_imovel(imovel_id):
         cursor.execute("DELETE FROM imoveis WHERE id = %s", (imovel_id,))
         conn.commit()
 
-        return jsonify({"mensagem": "Imóvel removido com sucesso"}), 200
+        links = {
+            "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),
+            "add": url_for("app.add_imovel.add_imovel", _external=True),
+            "filter_by_city": url_for("app.view_imoveis_by_cidade.view_imoveis_by_cidade", cidade=imovel[4], _external=True),
+            "filter_by_type": url_for("app.view_imoveis_by_tipo.view_imoveis_by_tipo", tipo=imovel[6], _external=True),
+        }
+
+        return jsonify({"mensagem": "Imóvel removido com sucesso", 'links': links}), 200
 
     except Exception as e:
         return jsonify({"erro": str(e)}), 500

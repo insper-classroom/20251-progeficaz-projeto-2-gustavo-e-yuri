@@ -1,7 +1,7 @@
 # Desc: Endpoint para visualização de imóveis por tipo (ex: casa, apartamento, terreno).
-# app/api/endpoints/view_imoveis_by_type.py
+# server/api/endpoints/view_imoveis_by_type.py
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, url_for
 from server.db.database import connect_db
 
 view_imoveis_by_tipo_bp = Blueprint("view_imoveis_by_tipo", __name__)
@@ -38,7 +38,13 @@ def view_imoveis_by_tipo(tipo):
             for row in imoveis
         ]
 
-        return jsonify({"imoveis": imoveis_list}), 200
+        links = {
+            "self": url_for("app.view_imoveis_by_tipo.view_imoveis_by_tipo", tipo=tipo, _external=True),
+            "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),
+            "add": url_for("app.add_imovel.add_imovel", _external=True),
+        }
+
+        return jsonify({"imoveis": imoveis_list, "links": links}), 200
 
     except Exception as e:
         return jsonify({"erro": str(e)}), 500

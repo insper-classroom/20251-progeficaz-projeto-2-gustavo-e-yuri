@@ -1,7 +1,7 @@
 #  Description: Endpoint para adicionar um imóvel ao banco de dados
-#  app/api/endpoints/add_imovel.py
+#  server/api/endpoints/add_imovel.py
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, url_for
 from server.db.database import connect_db  # Importando a função de conexão
 
 add_imovel_bp = Blueprint('add_imovel', __name__)
@@ -27,6 +27,14 @@ def add_imovel():
                data["cep"], data["tipo"], data["valor"], data["data_aquisicao"])
 
     cursor.execute(query, valores)
+    imovel_id = cursor.lastrowid  #Pegando o ID da query recém-criada
     conn.commit()
+
+    conn.close()
+
+    links = {'self': url_for('app.view_imovel_by_id.view_imoveis_from_id', id= imovel_id, _external=True),
+        'list_all': url_for('app.view_imoveis.view_imoveis',  _external=True),
+        'update': url_for('app.update_imovel.update_imovel', id= imovel_id, _external=True),
+        'delete': url_for('app.remove_imovel.remove_imovel', imovel_id=imovel_id, _external=True),}
     
-    return jsonify({"mensagem": "Imóvel adicionado com sucesso."}), 201
+    return jsonify({"mensagem": "Imóvel adicionado com sucesso.", "links": links}), 201

@@ -1,7 +1,7 @@
 #  DESC: Endpoint para visualizar um imóvel a partir de um ID
-# app/api/endpoints/view_imoveis_from_id.py
+# server/api/endpoints/view_imoveis_from_id.py
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, url_for
 from server.db.database import connect_db  # Importando a função de conexão
 
 view_imovel_by_id_bp = Blueprint('view_imovel_by_id', __name__)  # Novo nome para o Blueprint
@@ -34,4 +34,12 @@ def view_imoveis_from_id(id):
             'data_aquisicao': imovel[8],
         })
 
-    return jsonify({'imoveis': imoveis}), 200
+    links = {
+        "self": url_for("app.view_imovel_by_id.view_imoveis_from_id", id=id, _external=True),
+        "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),
+        "add": url_for("app.add_imovel.add_imovel", _external=True),
+        "update": url_for("app.update_imovel.update_imovel", id=id, _external=True),
+        "delete": url_for("app.remove_imovel.remove_imovel", imovel_id=id, _external=True),
+    }
+
+    return jsonify({"imoveis": imoveis, "_links": links}), 200

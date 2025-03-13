@@ -1,7 +1,7 @@
 # Description: Endpoint para atualizar um imóvel existente
-# app/api/endpoints/update_imovel.py
+# server/api/endpoints/update_imovel.py
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, url_for
 from server.db.database import connect_db  # Importando a função de conexão
 
 update_imovel_bp = Blueprint('update_imovel', __name__)  # Definindo o Blueprint
@@ -33,8 +33,24 @@ def update_imovel(id):
 
         if cursor.rowcount == 0:
             return jsonify({'erro': 'Nenhum imóvel encontrado com esse ID'}), 404
+    
+        # Recupera o imóvel atualizado para gerar os links HATEOAS
+        cursor.execute("SELECT * FROM imoveis WHERE id = %s", (id,))
+        imovel = cursor.fetchone()
 
-        return jsonify({'mensagem': 'Imóvel atualizado com sucesso'}), 200
+        if not imovel:
+            return jsonify({'erro': 'Erro ao recuperar imóvel atualizado'}), 500
+
+        links = {
+            "self": url_for("app.update_imovel.update_imovel", id=id, _external=True),
+            "list_all": url_for("app.view_imoveis.view_imoveis", _external=True),
+            "view_by_id": url_for("app.view_imovel_by_id.view_imoveis_from_id", id=id, _external=True),
+            "delete": url_for("app.remove_imovel.remove_imovel", imovel_id=id, _external=True),
+            "filter_by_city": url_for("app.view_imoveis_by_cidade.view_imoveis_by_cidade", cidade=imovel[4], _external=True),
+            "filter_by_type": url_for("app.view_imoveis_by_tipo.view_imoveis_by_tipo", tipo=imovel[6], _external=True),
+        }
+
+        return jsonify({'mensagem': 'Imóvel atualizado com sucesso', 'links': links}), 200
 
     except Exception as e:
         conn.rollback()
