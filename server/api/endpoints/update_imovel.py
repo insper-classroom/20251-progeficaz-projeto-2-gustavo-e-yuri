@@ -40,7 +40,11 @@ def update_imovel(id):
 
         if not imovel:
             return jsonify({'erro': 'Erro ao recuperar imóvel atualizado'}), 500
-
+        
+                # Converte o resultado para um dicionário
+        columns = ["id", "logradouro", "tipo_logradouro", "bairro", "cidade", "cep", "tipo", "valor", "data_aquisicao"]
+        imovel_dict = dict(zip(columns, imovel))
+        
         #Gerando o HATEOAS
         links = {
             "self": url_for("app.update_imovel.update_imovel", id=id, _external=True),
@@ -51,7 +55,7 @@ def update_imovel(id):
             "filter_by_type": url_for("app.view_imoveis_by_tipo.view_imoveis_by_tipo", tipo=imovel[6], _external=True),
         }
 
-        return jsonify({'mensagem': 'Imóvel atualizado com sucesso', 'links': links}), 200
+        return jsonify({'mensagem': 'Imóvel atualizado com sucesso', 'links': links, 'imovel_atualizado': imovel_dict}), 200
 
     except Exception as e:
         conn.rollback()

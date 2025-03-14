@@ -186,6 +186,8 @@ def test_route_update_imovel(mock_connect_db, client):
     # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
     mock_conn.cursor.return_value = mock_cursor
 
+    mock_cursor.fetchone.return_value = (1, "Nicole Common", "Novo Bairro Atualizado", 'Lake Danielle', 'Judymouth', '85184', 'casa em condominio', 600000, '2017-07-29')
+
     # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
     mock_connect_db.return_value = mock_conn
 
@@ -212,6 +214,23 @@ def test_route_update_imovel(mock_connect_db, client):
 
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
+
+    # Simulamos a execução de um SELECT para buscar os dados atualizados
+    mock_cursor.execute("SELECT * FROM imoveis WHERE id = %s", (imovel_id,))
+    
+    # Verifica se os dados foram realmente atualizados
+    assert response.get_json()['imovel_atualizado']  == {
+    "id": 1,
+    "logradouro": "Nicole Common",
+    "tipo_logradouro": "Novo Bairro Atualizado",
+    "bairro": "Lake Danielle",
+    "cidade": "Judymouth",
+    "cep": "85184",
+    "tipo": "casa em condominio",
+    "valor": 600000,
+    "data_aquisicao": "2017-07-29"
+}
+    
 
 @patch("server.api.endpoints.remove_imovel.connect_db")  # Mockando a conexão com o banco
 def test_route_remove_imovel(mock_connect_db, client):
@@ -249,6 +268,7 @@ def test_route_remove_imovel(mock_connect_db, client):
 
     # Certificamos que o método `commit` foi chamado
     mock_conn.commit.assert_called_once()
+    
 
 @patch("server.api.endpoints.view_imoveis_by_tipo.connect_db")  # Mockando a conexão com o banco
 def test_route_view_imoveis_by_tipo(mock_connect_db, client):
