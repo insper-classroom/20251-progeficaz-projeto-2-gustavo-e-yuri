@@ -53,7 +53,7 @@ pip install -r requirements.txt
 Para iniciar o servidor Flask, execute o seguinte comando:
 
 ```sh
-flask run
+python main.py
 ```
 
 A API estará disponível em:
@@ -157,7 +157,7 @@ Exemplo de resposta JSON com HATEOAS:
   "cidade": "São Paulo",
   "preco": 500000,
 },
-  "_links": {
+  "links": {
     "add": "http://34.228.24.35/api/add_imovel",
     "filter_by_city": "http://34.228.24.35/api/view_imoveis_by_cidade/NOME_CIDADE",
     "filter_by_type": "http://34.228.24.35/api/view_imoveis_by_tipo/TIPO_IMOVEL",
