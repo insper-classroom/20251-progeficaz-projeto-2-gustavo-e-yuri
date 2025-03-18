@@ -6,7 +6,7 @@ from server.db.database import connect_db  # Importando a função de conexão
 
 update_imovel_bp = Blueprint('update_imovel', __name__)  # Definindo o Blueprint
 
-@update_imovel_bp.route('/update_imovel/<int:id>', methods=['PUT'])
+@update_imovel_bp.route('/imoveis/<int:id>', methods=['PUT'])
 def update_imovel(id):
     conn = connect_db()  # Conectando ao banco de dados
 

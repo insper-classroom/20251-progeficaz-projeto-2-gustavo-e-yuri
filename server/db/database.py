@@ -1,5 +1,5 @@
 # Description: Módulo de conexão com o banco de dados MySQL.
-# app/db/database.py
+# server/api/db/database.py
 
 import mysql.connector
 from mysql.connector import Error

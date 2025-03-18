@@ -6,7 +6,7 @@ from server.db.database import connect_db
 
 remove_imovel_bp = Blueprint("remove_imovel", __name__)
 
-@remove_imovel_bp.route("/remove_imovel/<int:imovel_id>", methods=["DELETE"])
+@remove_imovel_bp.route("/imoveis/<int:imovel_id>", methods=["DELETE"])
 def remove_imovel(imovel_id):
     """
     Remove um imóvel do banco de dados pelo ID.

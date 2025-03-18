@@ -3,7 +3,6 @@
 from flask import url_for
 import pytest
 from unittest.mock import patch, MagicMock
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from main import app
 
 
@@ -34,7 +33,7 @@ def test_route_view_imoveis(mock_connect_db, client):
     mock_connect_db.return_value = mock_conn
 
     # Fazemos a requisição para a API
-    response = client.get("/api/view_imoveis")
+    response = client.get("/api/imoveis")
     print(response.get_json())
 
     # Verificamos se o código de status da resposta é 200 (OK)
@@ -106,7 +105,7 @@ def test_route_view_imoveis_from_id(mock_connect_db, client):
     mock_connect_db.return_value = mock_conn
 
     # Fazemos a requisição para a API
-    response = client.get("/api/view_imoveis_from_id/1")
+    response = client.get("/api/imoveis/1")
 
     # Verificamos se o código de status da resposta é 200 (OK)
     assert response.status_code == 200
@@ -163,7 +162,7 @@ def test_route_add_imovel(mock_connect_db, client):
     }
 
     # Fazemos a requisição `POST` para a API
-    response = client.post("/api/add_imovel", json=new_imovel)
+    response = client.post("/api/imoveis", json=new_imovel)
 
     # Verificamos se o código de status da resposta é 201 (Created)
     assert response.status_code == 201
@@ -201,7 +200,7 @@ def test_route_update_imovel(mock_connect_db, client):
     imovel_id = 1
 
     # Fazemos a requisição `PUT` para a API
-    response = client.put(f"/api/update_imovel/{imovel_id}", json=update_data)
+    response = client.put(f"/api/imoveis/{imovel_id}", json=update_data)
 
     # Verificamos se o código de status da resposta é 200 (OK)
     assert response.status_code == 200
@@ -251,7 +250,7 @@ def test_route_remove_imovel(mock_connect_db, client):
     imovel_id = 1
 
     # Fazemos a requisição `DELETE` para a API
-    response = client.delete(f"/api/remove_imovel/{imovel_id}")
+    response = client.delete(f"/api/imoveis/{imovel_id}")
 
     # Verificamos se o código de status da resposta é 200 (OK)
     assert response.status_code == 200
@@ -292,7 +291,7 @@ def test_route_view_imoveis_by_tipo(mock_connect_db, client):
     tipo_imovel = "casa"
 
     # Fazemos a requisição `GET` para a API
-    response = client.get(f"/api/view_imoveis_by_tipo/{tipo_imovel}")
+    response = client.get(f"/api/imoveis/tipo/{tipo_imovel}")
 
     # Verificamos se o código de status da resposta é 200 (OK)
     assert response.status_code == 200
@@ -351,7 +350,7 @@ def test_route_view_imoveis_by_cidade(mock_connect_db, client):
     cidade = "São Paulo"
 
     # Fazemos a requisição `GET` para a API
-    response = client.get(f"/api/view_imoveis_by_cidade/{cidade}")
+    response = client.get(f"/api/imoveis/cidade/{cidade}")
 
     # Verificamos se o código de status da resposta é 200 (OK)
     assert response.status_code == 200
@@ -384,3 +383,194 @@ def test_route_view_imoveis_by_cidade(mock_connect_db, client):
         ]
     }
     assert response.get_json()['imoveis'] == expected_response['imoveis']
+
+@patch("server.api.endpoints.add_imovel.connect_db")
+def test_route_add_imovel_400(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Dados para adicionar um imóvel
+    imovel_invalido = {}
+
+    
+    # Fazemos a requisição `POST` para a API
+    response = client.post("/api/imoveis", json=imovel_invalido)
+
+    # Verificamos se o código de status da resposta é 400 (Bad Request)
+    assert response.status_code == 400
+
+
+@patch("server.api.endpoints.remove_imovel.connect_db")  # Mockando a conexão com o banco
+def test_route_remove_imovel_404(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Simulamos um imóvel existente no banco
+    mock_cursor.fetchone.return_value = []
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # ID ERRADO PARA BUSCAR
+    imovel_id = 10
+
+    # Fazemos a requisição `DELETE` para a API
+    response = client.delete(f"/api/imoveis/{imovel_id}")
+
+    # Verificamos se o código de status da resposta é 404 (Not Found)
+    assert response.status_code == 404
+
+@patch("server.api.endpoints.update_imovel.connect_db")  # O caminho correto para a função a ser mockada
+def test_route_update_imovel_404(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    mock_cursor.fetchone.return_value = (1, "Nicole Common", "Novo Bairro Atualizado", 'Lake Danielle', 'Judymouth', '85184', 'casa em condominio', 600000, '2017-07-29')
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Dados para atualizar um imóvel existente
+    imovel_invalido = {}
+
+    # ID do imóvel a ser atualizado
+    imovel_id = 1
+
+    # Fazemos a requisição `PUT` para a API
+    response = client.put(f"/api/imoveis/{imovel_id}", json=imovel_invalido)
+
+    # Verificamos se o código de status da resposta é 400 (Bad Request)
+    assert response.status_code == 400
+
+
+@patch("server.api.endpoints.view_imoveis.connect_db")  # O caminho correto para a função a ser mockada
+def test_route_view_imoveis_404(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Simulamos o retorno do banco de dados
+    mock_cursor.fetchall.return_value = []
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Fazemos a requisição para a API
+    response = client.get("/api/imoveis")
+
+    # Verificamos se o código de status da resposta é 404 (Not Found)
+    assert response.status_code == 404
+
+@patch("server.api.endpoints.view_imoveis_by_cidade.connect_db")  # Mockando a conexão com o banco
+def test_route_view_imoveis_by_cidade_404(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Simulamos o retorno do banco de dados para a cidade "São Paulo"
+    mock_cursor.fetchall.return_value = [
+    ]
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Cidade a ser pesquisada
+    cidade = "Pokémon"
+
+    # Fazemos a requisição `GET` para a API
+    response = client.get(f"/api/imoveis/cidade/{cidade}")
+
+    # Verificamos se o código de status da resposta é 404 (Not Found)
+    assert response.status_code == 404
+
+@patch("server.api.endpoints.view_imoveis_by_tipo.connect_db")  # Mockando a conexão com o banco
+def test_route_view_imoveis_by_tipo_404(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Simulamos o retorno do banco de dados para o tipo "casa"
+    mock_cursor.fetchall.return_value = [
+    ]
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Tipo de imóvel a ser pesquisado
+    tipo_imovel = "Pokémon"
+
+    # Fazemos a requisição `GET` para a API
+    response = client.get(f"/api/imoveis/tipo/{tipo_imovel}")
+
+    # Verificamos se o código de status da resposta é 404 (Not Found)
+    assert response.status_code == 404
+
+@patch("server.api.endpoints.view_imoveis_from_id.connect_db")  # O caminho correto para a função a ser mockada
+def test_route_view_imoveis_from_id_404(mock_connect_db, client):
+    # Criamos um Mock para a conexão e o cursor
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    # Configuramos o Mock para retornar o cursor quando chamarmos conn.cursor()
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Simulamos o retorno do banco de dados para o ID 1
+    mock_cursor.fetchall.return_value = [
+    ]
+
+    # Substituímos a função `connect_db` para retornar nosso Mock em vez de uma conexão real
+    mock_connect_db.return_value = mock_conn
+
+    # Fazemos a requisição para a API
+    response = client.get("/api/imoveis/2")
+
+    # Verificamos se o código de status da resposta é 404 (Not Found)
+    assert response.status_code == 404
+
+def test_remove_imovel_id_nao_existe(client):
+    response = client.delete("/imoveis/999999")  # ID inexistente
+    assert response.status_code == 404
+
+def test_update_imovel_id_nao_existe(client):
+    response = client.put("/imoveis/999999", json={"invalid": "data"})  # ID inexistente
+    assert response.status_code == 404
+
+def test_view_imoveis_id_nao_existe(client):
+    response = client.get("/imoveis/nonexistent")
+    assert response.status_code == 404
+
+def test_view_by_cidade_cidade_nao_existe(client):
+    response = client.get("/imoveis/cidade/NonExistentCity")
+    assert response.status_code == 404
+
+def test_view_by_tipo_tipo_nao_existe(client):
+    response = client.get("/imoveis/tipo/NonExistentType")
+    assert response.status_code == 404
+
+def test_view_imovel_id_nao_existe(client):
+    response = client.get("/imoveis/999999")  # ID inexistente
+    assert response.status_code == 404

@@ -1,5 +1,5 @@
 # Description: Arquivo de configuração da aplicação.
-# app/api/core/config.py
+# server/api/core/config.py
 
 import os
 from dotenv import load_dotenv

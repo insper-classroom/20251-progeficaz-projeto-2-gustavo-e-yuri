@@ -6,7 +6,7 @@ from server.db.database import connect_db  # Importando a função de conexão
 
 add_imovel_bp = Blueprint('add_imovel', __name__)
 
-@add_imovel_bp.route('/add_imovel', methods=['POST'])
+@add_imovel_bp.route('/imoveis', methods=['POST'])
 def add_imovel():
     data = request.get_json()
 

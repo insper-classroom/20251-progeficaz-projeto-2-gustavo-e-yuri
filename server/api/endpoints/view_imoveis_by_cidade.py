@@ -6,7 +6,7 @@ from server.db.database import connect_db
 
 view_imoveis_by_cidade_bp = Blueprint("view_imoveis_by_cidade", __name__)
 
-@view_imoveis_by_cidade_bp.route("/view_imoveis_by_cidade/<string:cidade>", methods=["GET"])
+@view_imoveis_by_cidade_bp.route("/imoveis/cidade/<string:cidade>", methods=["GET"])
 def view_imoveis_by_cidade(cidade):
     """
     Retorna a lista de imóveis filtrados por cidade.

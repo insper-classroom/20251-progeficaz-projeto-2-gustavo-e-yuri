@@ -1,5 +1,5 @@
 # Description: Arquivo principal da aplicação, onde é criado o app e as rotas são registradas.
-# app/main.py
+# main.py
 
 from flask import Flask
 from server.api.endpoints import api_bp  # Importa os Blueprints

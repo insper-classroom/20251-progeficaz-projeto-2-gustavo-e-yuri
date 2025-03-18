@@ -6,7 +6,7 @@ from server.db.database import connect_db  # Importando a função de conexão
 
 view_imovel_by_id_bp = Blueprint('view_imovel_by_id', __name__)  # Novo nome para o Blueprint
 
-@view_imovel_by_id_bp.route('/view_imoveis_from_id/<int:id>', methods=['GET'])
+@view_imovel_by_id_bp.route('/imoveis/<int:id>', methods=['GET'])
 def view_imoveis_from_id(id):
     conn = connect_db()  # Conectando ao banco de dados
 
